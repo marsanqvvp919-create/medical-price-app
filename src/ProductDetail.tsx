@@ -24,6 +24,22 @@ export default function ProductDetail({ products }: Props) {
   if (!product) {
     return <div className="p-8">商品が見つかりません</div>
   }
+const countryLabelMap: Record<string, string> = {
+  Korea: "韓国",
+  Japan: "日本",
+  Germany: "ドイツ",
+  France: "フランス",
+  Italy: "イタリア",
+  USA: "アメリカ",
+  UK: "イギリス",
+  Switzerland: "スイス",
+  Denmark: "デンマーク",
+  Luxembourg: "ルクセンブルク",
+  Turkey: "トルコ",
+  India: "インド",
+  Pakistan: "パキスタン",
+  India: "インド",
+};
 
   const formatPrice = (min: number, max: number) =>
     min === max
@@ -38,7 +54,7 @@ export default function ProductDetail({ products }: Props) {
         <img src={product.image} className="w-full h-64 object-cover mb-4 rounded" />
         <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
         <p>会社：{product.company}</p>
-        <p>国：{product.country}</p>
+        <p>国：{countryLabelMap[product.country] || product.country}</p>
         <p>容量：{product.volume}</p>
         <p className="text-xl font-bold text-blue-700 mt-4">
           {formatPrice(product.price_min, product.price_max)}
