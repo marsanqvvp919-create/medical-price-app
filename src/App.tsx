@@ -20,6 +20,8 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>([])
   const [sortType, setSortType] = useState("name")
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedCountryGroup, setSelectedCountryGroup] = useState("")
+
 
   // データ取得
   useEffect(() => {
@@ -34,9 +36,38 @@ export default function App() {
     min === max
       ? `¥${min.toLocaleString()}`
       : `¥${min.toLocaleString()}〜¥${max.toLocaleString()}`
+// ===== 国フィルター =====
+const countryFilteredProducts = products.filter(p => {
+  if (!selectedCountryGroup) return true
+
+  if (selectedCountryGroup === "korea") {
+    return p.country === "Korea" || p.country === "韓国"
+  }
+
+  if (selectedCountryGroup === "japan") {
+    return p.country === "Japan" || p.country === "日本"
+  }
+
+  if (selectedCountryGroup === "other") {
+    return (
+      p.country !== "Korea" &&
+      p.country !== "韓国" &&
+      p.country !== "Japan" &&
+      p.country !== "日本"
+    )
+  }
+
+  return true
+})
 
   // 検索・カテゴリフィルター
-  const filteredProducts = products
+  const filteredProducts = countryFilteredProducts
+  .filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    p.company.toLowerCase().includes(search.toLowerCase())
+  )
+  .filter(p => selectedCategory ? p.category === selectedCategory : true)
+
     .filter(p =>
   p.name.toLowerCase().includes(search.toLowerCase()) ||
   p.company.toLowerCase().includes(search.toLowerCase())
@@ -68,6 +99,14 @@ const categoryLabelMap: Record<string, string> = {
   anesthesia: "麻酔関連",
   cannula: "カニューレ",
   placenta: "プラセンタ注射",
+  Dermatological: "皮膚系製剤",
+  Gynecology: "婦人科系薬剤",
+  Mens: "メンズヘルス系薬剤",
+  STISTD: "性感染症系薬剤",
+  Smokingcessation: "禁煙系薬剤",
+  Hairloss: "頭髪系薬剤",
+  sexualfunction: "性機能系薬剤",
+  infertility: "不妊系薬剤",
 };
 
   return (
@@ -125,6 +164,52 @@ const categoryLabelMap: Record<string, string> = {
             </select>
           </div>
         </div>
+        {/* ===== 国フィルター ===== */}
+<div className="flex flex-wrap gap-3 mb-6">
+    <button
+    onClick={() => setSelectedCountryGroup("")}
+    className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+      selectedCountryGroup === ""
+        ? "bg-gray-700 text-white"
+        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+    }`}
+  >
+    全て
+  </button>
+  <button
+    onClick={() => setSelectedCountryGroup("korea")}
+    className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+      selectedCountryGroup === "korea"
+        ? "bg-green-700 text-white"
+        : "bg-green-100 text-green-800 hover:bg-green-200"
+    }`}
+  >
+    韓国
+  </button>
+
+  <button
+    onClick={() => setSelectedCountryGroup("japan")}
+    className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+      selectedCountryGroup === "japan"
+        ? "bg-red-700 text-white"
+        : "bg-red-100 text-red-800 hover:bg-red-200"
+    }`}
+  >
+    日本
+  </button>
+
+  <button
+    onClick={() => setSelectedCountryGroup("other")}
+    className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+      selectedCountryGroup === "other"
+        ? "bg-purple-700 text-white"
+        : "bg-purple-100 text-purple-800 hover:bg-purple-200"
+    }`}
+  >
+    その他
+  </button>
+</div>
+
 {/* カテゴリ */}
 <div className="flex flex-wrap gap-3 mb-8">
   {categories.map(cat => (
