@@ -38,7 +38,6 @@ const countryLabelMap: Record<string, string> = {
   Turkey: "トルコ",
   India: "インド",
   Pakistan: "パキスタン",
-  India: "インド",
 };
 
   const formatPrice = (min: number, max: number) =>
